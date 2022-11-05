@@ -33,6 +33,7 @@ public class ThePurpleGameEngine extends Canvas implements Runnable
 		this.windowTitle = title;
 		
 		this.initWindow();
+		this.start();
 	}
 	
 	private void initWindow()
