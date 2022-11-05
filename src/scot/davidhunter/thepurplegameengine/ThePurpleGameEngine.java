@@ -4,12 +4,15 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
 public class ThePurpleGameEngine extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = -6641423049343361361L;
+	
+	private static ArrayList<ThePurpleGameEngine> INSTANCES = new ArrayList<ThePurpleGameEngine>();
 	
 	private Dimension size;
 	private String title, windowTitle;
@@ -64,6 +67,8 @@ public class ThePurpleGameEngine extends Canvas implements Runnable
 		running = true;
 		thread = new Thread( this );
 		thread.start();
+		
+		ThePurpleGameEngine.INSTANCES.add( this );
 	}
 	
 	public void run()
@@ -86,7 +91,10 @@ public class ThePurpleGameEngine extends Canvas implements Runnable
 			e.printStackTrace();
 		}
 		
-		System.exit( 0 );
+		ThePurpleGameEngine.INSTANCES.remove( this );
+		
+		if ( ThePurpleGameEngine.INSTANCES.isEmpty() )
+			System.exit( 0 );
 	}
 	
 	public static void main( String[] args )
