@@ -21,6 +21,8 @@ public class ThePurpleGameEngine extends Canvas implements Runnable
 	private JFrame window;
 	private Thread thread;
 	
+	private int fps;
+	
 	public ThePurpleGameEngine( int width, String title )
 	{
 		this( width, width / 16 * 9, title );
@@ -73,6 +75,58 @@ public class ThePurpleGameEngine extends Canvas implements Runnable
 	
 	public void run()
 	{
+		int frames = 0;
+		double unprocessedSeconds = 0;
+		long previousTime = System.nanoTime();
+		double secondsPerUpdate = 1 / 60.0;
+		int updateCount = 0;
+		boolean updated = false;
+		
+		while ( running )
+		{
+			long currentTime = System.nanoTime();
+			long passedTime = currentTime - previousTime;
+			previousTime = currentTime;
+			unprocessedSeconds += passedTime / 1000000000.0;
+			
+			while ( unprocessedSeconds > secondsPerUpdate )
+			{
+				update();
+				unprocessedSeconds -= secondsPerUpdate;
+				updated = true;
+				updateCount++;
+				
+				if ( updateCount % 60 == 0 )
+				{
+					fps = frames;
+					previousTime += 1000;
+					frames = 0;
+				}
+			}
+		}
+		
+		if ( updated )
+		{
+			render();
+			frames++;
+		}
+		
+		render();
+		frames++;
+	}
+	
+	private void update()
+	{
+		if ( window != null )
+		{
+			windowTitle = title + " | " + fps + " FPS";
+			window.setTitle( windowTitle );
+		}
+	}
+	
+	private void render()
+	{
+		
 	}
 	
 	public void stop()
